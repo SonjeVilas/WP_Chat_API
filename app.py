@@ -3,7 +3,7 @@ import preprocessor,helper
 import json
 
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 @app.route('/',methods=['POST'])
 def upload_file():
@@ -81,5 +81,5 @@ def upload_file():
     responseJson = jsonify(response)
     return responseJson
     
-if _name_ == '_main_':
+if __name__ == '__main__':
     app.run(debug=False)
