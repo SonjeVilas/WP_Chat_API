@@ -3,7 +3,7 @@ import preprocessor,helper
 import json
 
 
-app = Flask(__name__)
+app = Flask(_name_)
 
 @app.route('/',methods=['POST'])
 def upload_file():
@@ -13,32 +13,33 @@ def upload_file():
         bytes_data = fileSrc.getvalue()
         data = bytes_data.decode("utf-8")
         df = preprocessor.preprocess(data)
-        print('file converted to dataframe')
+        
 
         # fetch unique users
         user_list = df['user'].unique().tolist()
         # user_list.remove('group_notification')
         user_list.sort()
         user_list.insert(0,"Overall")
-        print('got user list')
+        #print('got user list')
         selected_user = user_list[0]
-        print('got seleceted user')
+        #print('got seleceted user')
 
         num_messages, words, num_media_messages, num_links = helper.fetch_stats(selected_user,df)
 
-        print("num_messages : ",num_messages)
-        print("words : ",words)
-        print("num_media_messages : ",num_media_messages)
-        print("num_links : ",num_links)
+        # print("num_messages : ",num_messages)
+        # print("words : ",words)
+        # print("num_media_messages : ",num_media_messages)
+        # print("num_links : ",num_links)
 
-        response = {'timeline':[],'daily_timeline':[],'busy_day':[],'busy_month':[],'x':[],'new_df':[],'word_cloud':[],'most_common_words':[],'emojis':[]}
+        response = {'stats':[],'timeline':[],'daily_timeline':[],'busy_day':[],'busy_month':[],'x':[],'new_df':[],'word_cloud':[],'most_common_words':[],'emojis':[]}
 
+        stats_dict={'num_messages':num_messages,'words':words,'num_media_messages':num_media_messages,'num_links':num_links}
+        response['stats'] = stats_dict
 
-        
         # monthly timeline
         timeline = helper.monthly_timeline(selected_user,df)      
-        print("\nTimeline : ")
-        print(timeline)
+        # print("\nTimeline : ")
+        # print(timeline)
 
         timeline_dict = timeline.to_dict()
         response['timeline'] = timeline_dict
@@ -65,8 +66,8 @@ def upload_file():
             
         # WordCloud
         df_wc = helper.create_wordcloud(selected_user,df)
-        print(df_wc)
-        print('\nWordCloud : ',df_wc)
+        # print(df_wc)
+        # print('\nWordCloud : ',df_wc)
         
         #most common words
         most_common_df = helper.most_common_words(selected_user,df)
@@ -80,5 +81,5 @@ def upload_file():
     responseJson = jsonify(response)
     return responseJson
     
-if __name__ == '__main__':
+if _name_ == '_main_':
     app.run(debug=False)
